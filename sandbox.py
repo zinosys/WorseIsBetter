@@ -7,7 +7,14 @@ def load_sentiments():
         word_sentiments[word] = float(score.strip())
     return word_sentiments
     
-word_sentiments = get_sentiment_data()
+word_sentiments = load_sentiments()
+
+def get_word_sentiment(word):
+    """Return a sentiment representing the degree of positive or negative
+    feeling in the given word.
+    """
+    # Learn more: http://docs.python.org/3/library/stdtypes.html#dict.get
+    return word_sentiments.get(word)
 
 def extract_words(text):
     """Return the words in a tweet, not including punctuation.
@@ -42,15 +49,15 @@ def analyze_review_sentiment(text):
     sentiment_list = []
     for word in word_list:
         word_sentiment = get_word_sentiment(word)
-        if has_sentiment(word_sentiment):
-            sentiment_list.append(sentiment_value(word_sentiment))
+        if word_sentiment:
+            sentiment_list.append(word_sentiment)
     
     list_length = len(sentiment_list)
     if list_length == 0:
-        return make_sentiment(None) # No numerical sentiments.
+        return None # No numerical sentiments.
     
     average = sum(sentiment_list)
-    return make_sentiment(average / list_length)
+    return average / list_length
 
 yelp_dataset_path = 'yelp_data/yelp_academic_dataset_review.json'
 
@@ -69,8 +76,21 @@ def query_for_tag(query_key, query_tag, query_type=contains, transform=identity)
     return query_data
 
 def main():
-    biz_reviews = query_for_tag("business_id", "mQfT3JYu18HN22DVylcE7A", equals)
+    print(analyze_review_sentiment("love like"))
+    reviews = query_for_tag("business_id", "mQfT3JYu18HN22DVylcE7A", equals)
     # now do interesting things with them!
+    avgsent = 0
+    count = 0
+    for review in reviews:
+        cursent = analyze_review_sentiment(review["text"])
+        if cursent:
+            print("Review sentiment: " + str(cursent))
+            avgsent += cursent
+            count += 1
+        else:
+            print("No sentiment for this review.")
+    
+    print("Average sentiment: " + str(avgsent))
 
 
 if __name__ == '__main__':
