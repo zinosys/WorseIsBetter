@@ -1,4 +1,6 @@
 import json
+import shit
+import sys
 
 def load_sentiments():
     word_sentiments = {}
@@ -65,7 +67,7 @@ contains = lambda x, y: x in y
 equals = lambda x, y: x == y
 identity = lambda x: x
 lowercase = lambda x: x.lower()
-def query_for_tag(query_key, query_tag, query_type=contains, transform=identity):
+def query_for_tag(query_key, query_tag, query_type=contains, transform=identity, loc=yelp_dataset_path):
     with open(yelp_dataset_path) as Data:
         query_data = []
         for line in Data:
@@ -75,8 +77,9 @@ def query_for_tag(query_key, query_tag, query_type=contains, transform=identity)
     
     return query_data
 
-def main():
-    reviews = query_for_tag("business_id", "mQfT3JYu18HN22DVylcE7A", equals)
+def main(*args):
+    biz_id = sys.argv[1]
+    reviews = query_for_tag("business_id", biz_id, equals)
     # now do interesting things with them!
     avgsent = 0
     count = 0
@@ -101,7 +104,7 @@ def main():
         if service:
             avgsvc += service
 
-        ambianceidx = review["text"].find("location")
+        ambianceidx = review["text"].find("surprise")
         ambiancestr = review["text"][ambianceidx - 2:ambianceidx + 2]
         ambiance = analyze_review_sentiment(ambiancestr)
         if ambiance:
@@ -114,10 +117,21 @@ def main():
     avgsent /= count
     print("Food score: " + str(avgfood * 100))
     print("Service score: " + str(avgsvc * 100))
-    print("Location score: " + str(avgamb * 100))
+    print("Quality score: " + str(avgamb * 100))
     print("Average sentiment: " + str(avgsent * 100))
     print("Average enthusiasm per star: " + str((avgsent * 5 / 4.5) * 100))
+
+    print("\nSuch analytics. Very D3. Wow.")
+
+    shit.plot("Food", int(avgfood * 100), 10)
+    shit.plot("service", int(avgsvc * 100), 10)
+    shit.plot("Location", int(avgamb * 100), 10)
+    shit.plot("Sentiment", int(avgsent * 100), 10)
 
 
 if __name__ == '__main__':
     main()
+
+
+# ID 1:   mQfT3JYu18HN22DVylcE7A
+# ID 2:   tl9XIP5trlkcuSfTQqe5jg
