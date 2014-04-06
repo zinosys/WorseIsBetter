@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 Flask Heroku
 ============
 
@@ -221,3 +222,7 @@ Lastly, add the following A records to your DNS management tool.
     75.101.163.44
     75.101.145.87
     174.129.212.2
+=======
+WorseIsBetter
+=============
+>>>>>>> 8de3207fedfbc1105ffefbd2b496e2a9793d819c
