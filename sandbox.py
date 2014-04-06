@@ -76,21 +76,47 @@ def query_for_tag(query_key, query_tag, query_type=contains, transform=identity)
     return query_data
 
 def main():
-    print(analyze_review_sentiment("love like"))
     reviews = query_for_tag("business_id", "mQfT3JYu18HN22DVylcE7A", equals)
     # now do interesting things with them!
     avgsent = 0
     count = 0
+    avgsvc = 0
+    avgfood = 0
+    avgamb = 0
     for review in reviews:
         cursent = analyze_review_sentiment(review["text"])
         if cursent:
-            print("Review sentiment: " + str(cursent))
             avgsent += cursent
             count += 1
-        else:
-            print("No sentiment for this review.")
-    
-    print("Average sentiment: " + str(avgsent))
+
+        foodidx = review["text"].find("food")
+        foodstr = review["text"][foodidx - 2:foodidx + 2]
+        food = analyze_review_sentiment(foodstr)
+        if food:
+            avgfood += food
+
+        serviceidx = review["text"].find("service")
+        servicestr = review["text"][serviceidx - 2:serviceidx + 2]
+        service = analyze_review_sentiment(servicestr)
+        if service:
+            avgsvc += service
+
+        ambianceidx = review["text"].find("location")
+        ambiancestr = review["text"][ambianceidx - 2:ambianceidx + 2]
+        ambiance = analyze_review_sentiment(ambiancestr)
+        if ambiance:
+            avgamb += ambiance
+
+        
+    avgfood /= count
+    avgsvc /= count
+    avgamb /= count
+    avgsent /= count
+    print("Food score: " + str(avgfood * 100))
+    print("Service score: " + str(avgsvc * 100))
+    print("Location score: " + str(avgamb * 100))
+    print("Average sentiment: " + str(avgsent * 100))
+    print("Average enthusiasm per star: " + str((avgsent * 5 / 4.5) * 100))
 
 
 if __name__ == '__main__':
