@@ -1,0 +1,10 @@
+import json
+
+with open('yelp_data/yelp_academic_dataset_user.json') as D:
+    data = D.readlines()
+
+    for line in data:
+        parsed_line = json.loads(line)
+        if ("name" in parsed_line.keys() and parsed_line["name"].lower() == "krishna"):
+            print(parsed_line)
+
