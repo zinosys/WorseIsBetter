@@ -69,8 +69,8 @@ def query_for_tag(query_key, query_tag, query_type=contains, transform=identity)
     return query_data
 
 def main():
-    biz_reviews = query_for_tag("business_id", "mQfT3JYu18HN22DVylcE7A", equals)
-    # now do interesting things with them!
+    biz_data = query_for_tag("business_id", "mQfT3JYu18HN22DVylcE7A", equals)
+    
 
 
 if __name__ == '__main__':
